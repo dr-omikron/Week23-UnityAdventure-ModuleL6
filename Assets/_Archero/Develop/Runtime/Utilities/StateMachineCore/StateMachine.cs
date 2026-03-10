@@ -5,12 +5,12 @@ using _Archero.Develop.Runtime.Utilities.Conditions;
 
 namespace _Archero.Develop.Runtime.Utilities.StateMachineCore
 {
-    public abstract class StateMachine<TState> : IDisposable where TState : class, IState
+    public abstract class StateMachine<TState> : State, IDisposable, IUpdatableState where TState : class, IState
     {
         private readonly List<StateNode<TState>> _states = new List<StateNode<TState>>();
         private StateNode<TState> _currentState;
         private bool _isRunning;
-        
+
         private readonly List<IDisposable> _disposables;
 
         protected StateMachine(List<IDisposable> disposables)
@@ -43,10 +43,14 @@ namespace _Archero.Develop.Runtime.Utilities.StateMachineCore
                     break;
                 }
             }
+
+            UpdateLogic(deltaTime);
         }
 
-        public void Enter()
+        public override void Enter()
         {
+            base.Enter();
+
             if (_currentState == null)
                 SwitchState(_states[0]);
             else
@@ -55,8 +59,10 @@ namespace _Archero.Develop.Runtime.Utilities.StateMachineCore
             _isRunning = true;
         }
 
-        public void Exit()
+        public override void Exit()
         {
+            base.Exit();
+
             _currentState?.State.Exit();
             _isRunning = false;
         }
@@ -64,18 +70,20 @@ namespace _Archero.Develop.Runtime.Utilities.StateMachineCore
         public void Dispose()
         {
             _isRunning = false;
-            
+
             foreach (StateNode<TState> stateNode in _states)
                 if(stateNode.State is IDisposable disposableState)
                     disposableState.Dispose();
 
             _states.Clear();
-            
+
             foreach(IDisposable disposable in _disposables)
                 disposable.Dispose();
 
             _disposables.Clear();
         }
+
+        protected virtual void UpdateLogic(float deltaTime) {}
 
         private void SwitchState(StateNode<TState> nextState)
         {

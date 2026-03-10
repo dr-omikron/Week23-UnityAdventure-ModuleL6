@@ -4,7 +4,7 @@ using _Archero.Develop.Runtime.Utilities.StateMachineCore;
 
 namespace _Archero.Develop.Runtime.Gameplay.Features.AI
 {
-    public class AIStateMachine : StateMachine<IState>
+    public class AIStateMachine : StateMachine<IUpdatableState>
     {
         public AIStateMachine(List<IDisposable> disposables) : base(disposables)
         {
@@ -12,6 +12,12 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.AI
 
         public AIStateMachine() : base(new List<IDisposable>())
         {
+        }
+
+        protected override void UpdateLogic(float deltaTime)
+        {
+            base.UpdateLogic(deltaTime);
+            CurrentState?.Update(deltaTime);
         }
     }
 }

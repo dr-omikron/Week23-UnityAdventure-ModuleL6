@@ -6,13 +6,10 @@ using UnityEngine;
 
 namespace _Archero.Develop.Runtime.Gameplay.Features.AI.States
 {
-    public class RandomPositionTeleportState : State
+    public class RandomPositionTeleportState : State, IUpdatableState
     {
-        private readonly ReactiveEvent<float> _energySpendRequest;
-        private readonly ReactiveVariable<float> _energySpendCost;
+        private readonly ReactiveEvent _teleported;
         private readonly ReactiveVariable<float> _teleportationMaxRadius;
-        private readonly ReactiveVariable<bool> _isActivateAriaDetectingSystem;
-        private readonly ReactiveVariable<bool> _isDamageDealt;
         private readonly Transform _transform;
 
         private readonly RandomPointGeneratorService _randomPointGeneratorService;
@@ -21,12 +18,9 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.AI.States
         public RandomPositionTeleportState(Entity entity, RandomPointGeneratorService randomPointGeneratorService)
         {
             _randomPointGeneratorService = randomPointGeneratorService;
-            _energySpendRequest = entity.EnergySpendRequest;
-            _energySpendCost = entity.TeleportationEnergyCost;
             _teleportationMaxRadius = entity.TeleportationMaxRadius;
-            _isActivateAriaDetectingSystem = entity.IsActivateAriaDetectingSystem;
-            _isDamageDealt = entity.IsDamageDealt;
             _transform = entity.Transform;
+            _teleported = entity.Teleported;
         }
 
         public bool IsTeleported { get; private set; }
@@ -38,18 +32,19 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.AI.States
             _randomPosition = _randomPointGeneratorService.Generate(_transform, _teleportationMaxRadius.Value);
 
             _transform.position = _randomPosition;
-            _energySpendRequest.Invoke(_energySpendCost.Value);
+            _teleported.Invoke();
 
             IsTeleported = true;
         }
+
+        public void Update(float deltaTime) {}
 
         public override void Exit()
         {
             base.Exit();
 
-            _isActivateAriaDetectingSystem.Value = true;
-            _isDamageDealt.Value = false;
             IsTeleported = false;
         }
+
     }
 }

@@ -35,7 +35,7 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.ApplyDamage
         {
             if (damage < 0)
                 throw new ArgumentOutOfRangeException(nameof(damage));
-            
+
             if(_canApplyDamage.Evaluate() == false)
                 return;
 

@@ -42,6 +42,7 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.AI
 
                     continue;
                 }
+
                 _entityToBrains[i].Brain.Update(deltaTime);
             }
         }
