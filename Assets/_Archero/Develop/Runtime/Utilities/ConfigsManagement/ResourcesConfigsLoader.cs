@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using _Archero.Develop.Runtime.Configs.Gameplay.Levels;
+using _Archero.Develop.Runtime.Configs.Meta.Wallet;
+using _Archero.Develop.Runtime.Utilities.AssetsManagement;
+using UnityEngine;
+
+namespace _Archero.Develop.Runtime.Utilities.ConfigsManagement
+{
+    public class ResourcesConfigsLoader : IConfigsLoader
+    {
+        private readonly ResourcesAssetsLoader _resourcesAssetsLoader;
+
+        private readonly Dictionary<Type, string> _configsResourcesPaths = new Dictionary<Type, string>
+        {
+            { typeof(StartWalletConfig), "Configs/Meta/Wallet/StartWalletConfig" },
+            { typeof(CurrencyIconsConfig), "Configs/Meta/Wallet/CurrencyIconsConfig" },
+            { typeof(LevelsListConfig), "Configs/Gameplay/Levels/LevelsListConfig" }
+        };
+
+        public ResourcesConfigsLoader(ResourcesAssetsLoader resourcesAssetsLoader)
+        {
+            _resourcesAssetsLoader = resourcesAssetsLoader;
+        }
+
+        public IEnumerator LoadAsync(Action<Dictionary<Type, object>> onConfigsLoaded)
+        {
+            Dictionary<Type, object> loadedConfigs = new Dictionary<Type, object>();
+
+            foreach (KeyValuePair<Type, string> resourcesPath in _configsResourcesPaths)
+            {
+                ScriptableObject config = _resourcesAssetsLoader.Load<ScriptableObject>(resourcesPath.Value);
+                loadedConfigs.Add(resourcesPath.Key, config);
+                yield return null;
+            }
+
+            onConfigsLoaded?.Invoke(loadedConfigs);
+        }
+    }
+}
