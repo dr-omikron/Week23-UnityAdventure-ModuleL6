@@ -4,7 +4,7 @@ using _Archero.Develop.Runtime.Gameplay.EntitiesCore.Systems;
 
 namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
 {
-    public partial class Entity : IDisposable
+    public partial class Entity : IDisposable, IEquatable<Entity>
     {
         private readonly Dictionary<Type, IEntityComponent> _components = new Dictionary<Type, IEntityComponent>();
         private readonly List<IEntitySystem> _systems = new List<IEntitySystem>();
@@ -94,5 +94,7 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
 
             return this;
         }
+
+        public bool Equals(Entity other) => other == this;
     }
 }

@@ -28,6 +28,9 @@ namespace _Archero.Develop.Runtime.Gameplay
         public void Run()
         {
             _entity = _entitiesFactory.CreateHero(Vector3.zero);
+            StateMachineBrain brain = _brainsFactory.CreateMainHeroBrain(_entity);
+            _brainContext.SetFor(_entity, brain);
+            
             _entitiesFactory.CreateGhost(Vector3.zero + Vector3.forward * 3);
             _teleportedGhost = _entitiesFactory.CreateTeleportedGhost(Vector3.zero + Vector3.forward * 1.5f);
 
@@ -39,19 +42,11 @@ namespace _Archero.Develop.Runtime.Gameplay
             if (_isRunning == false)
                 return;
 
-            if(Input.GetKeyDown(KeyCode.R))
-                _entity.StartAttackRequest.Invoke();
-
             if(Input.GetKeyDown(KeyCode.Space))
             {
                 StateMachineBrain brain = _brainsFactory.CreateRandomTelepotGhostBrain(_teleportedGhost);
                 _brainContext.SetFor(_teleportedGhost, brain);
             }
-
-            Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
-
-            _entity.MoveDirection.Value = input;
-            _entity.RotationDirection.Value = input;
         }
     }
 }

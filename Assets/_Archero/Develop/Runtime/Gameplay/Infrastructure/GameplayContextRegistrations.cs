@@ -1,6 +1,7 @@
 ﻿using _Archero.Develop.Runtime.Gameplay.EntitiesCore;
 using _Archero.Develop.Runtime.Gameplay.EntitiesCore.Mono;
 using _Archero.Develop.Runtime.Gameplay.Features.AI;
+using _Archero.Develop.Runtime.Gameplay.Features.InputFeature;
 using _Archero.Develop.Runtime.Infrastructure.DI;
 using _Archero.Develop.Runtime.Utilities;
 using _Archero.Develop.Runtime.Utilities.AssetsManagement;
@@ -19,6 +20,7 @@ namespace _Archero.Develop.Runtime.Gameplay.Infrastructure
             container.RegisterAsSingle(CreateRandomPointGeneratorService);
             container.RegisterAsSingle(CreateBrainsFactory);
             container.RegisterAsSingle(CreateAIBrainContext);
+            container.RegisterAsSingle<IInputService>(CreateDesktopInput);
         }
 
         private static EntitiesLifeContext CreateEntitiesLifeContext(DIContainer c)
@@ -38,7 +40,7 @@ namespace _Archero.Develop.Runtime.Gameplay.Infrastructure
         
         private static ColliderRegistryService CreateColliderRegistryService(DIContainer c)
             => new ColliderRegistryService();
-        
+
         private static RemoveSelfFromContactsService CreateRemoveSelfFromContactsService(DIContainer c)
             => new RemoveSelfFromContactsService();
         
@@ -46,7 +48,9 @@ namespace _Archero.Develop.Runtime.Gameplay.Infrastructure
             => new RandomPointGeneratorService();
 
         private static BrainsFactory CreateBrainsFactory(DIContainer c) => new BrainsFactory(c);
-        
+
         private static AIBrainContext CreateAIBrainContext(DIContainer c) => new AIBrainContext();
+
+        private static DesktopInput CreateDesktopInput(DIContainer c) => new DesktopInput();
     }
 }

@@ -585,6 +585,20 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
 			return AddComponent(new _Archero.Develop.Runtime.Gameplay.Features.ApplyDamage.CanApplyDamage {Value = value});
 		}
 
+		public _Archero.Develop.Runtime.Gameplay.Features.AI.CurrentTarget CurrentTargetC => GetComponent<_Archero.Develop.Runtime.Gameplay.Features.AI.CurrentTarget>();
+
+		public _Archero.Develop.Runtime.Utilities.Reactive.ReactiveVariable<_Archero.Develop.Runtime.Gameplay.EntitiesCore.Entity> CurrentTarget => CurrentTargetC.Value;
+
+		public _Archero.Develop.Runtime.Gameplay.EntitiesCore.Entity AddCurrentTarget()
+		{
+			return AddComponent(new _Archero.Develop.Runtime.Gameplay.Features.AI.CurrentTarget { Value = new _Archero.Develop.Runtime.Utilities.Reactive.ReactiveVariable<_Archero.Develop.Runtime.Gameplay.EntitiesCore.Entity>() });
+		}
+
+		public _Archero.Develop.Runtime.Gameplay.EntitiesCore.Entity AddCurrentTarget(_Archero.Develop.Runtime.Utilities.Reactive.ReactiveVariable<_Archero.Develop.Runtime.Gameplay.EntitiesCore.Entity> value)
+		{
+			return AddComponent(new _Archero.Develop.Runtime.Gameplay.Features.AI.CurrentTarget {Value = value});
+		}
+
 		public _Archero.Develop.Runtime.Gameplay.Features.Abilities.MaxEnergy MaxEnergyC => GetComponent<_Archero.Develop.Runtime.Gameplay.Features.Abilities.MaxEnergy>();
 
 		public _Archero.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single> MaxEnergy => MaxEnergyC.Value;
