@@ -42,13 +42,14 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
             _monoEntityFactory.Create(entity, position, "Entities/Hero");
 
             entity
+                .AddName(new ReactiveVariable<string>("Hero"))
                 .AddMoveDirection()
                 .AddMoveSpeed(new ReactiveVariable<float>(10))
                 .AddIsMoving()
                 .AddRotationSpeed(new ReactiveVariable<float>(900))
                 .AddRotationDirection()
                 .AddMaxHealth(new ReactiveVariable<float>(100))
-                .AddCurrentHealth(new ReactiveVariable<float>(100))
+                .AddCurrentHealth(new ReactiveVariable<float>(80))
                 .AddIsDead()
                 .AddInDeathProcess()
                 .AddDeathProcessInitialTime(new ReactiveVariable<float>(2))
@@ -132,6 +133,7 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
             _monoEntityFactory.Create(entity, position, "Entities/Ghost");
 
             entity
+                .AddName(new ReactiveVariable<string>("Ghost"))
                 .AddMoveDirection()
                 .AddMoveSpeed(new ReactiveVariable<float>(10))
                 .AddIsMoving()
@@ -197,6 +199,7 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
             _monoEntityFactory.Create(entity, position, "Entities/Projectile");
 
             entity
+                .AddName(new ReactiveVariable<string>("Projectile"))
                 .AddMoveDirection(new ReactiveVariable<Vector3>(direction))
                 .AddMoveSpeed(new ReactiveVariable<float>(10))
                 .AddIsMoving()
@@ -251,10 +254,14 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
             _monoEntityFactory.Create(entity, position, "Entities/TeleportedGhost");
 
             entity
+                .AddName(new ReactiveVariable<string>("TeleportedGhost"))
                 .AddMaxHealth(new ReactiveVariable<float>(100))
                 .AddCurrentHealth(new ReactiveVariable<float>(100))
                 .AddMaxEnergy(new ReactiveVariable<float>(100))
                 .AddCurrentEnergy(new ReactiveVariable<float>(100))
+                .AddCurrentTarget()
+                .AddRotationSpeed(new ReactiveVariable<float>(900))
+                .AddRotationDirection()
                 .AddTeleported()
                 .AddEnergySpendRequest()
                 .AddEnergySpendEvent()
@@ -277,6 +284,9 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
                 .AddAriaContactDamage(new ReactiveVariable<float>(30))
                 .AddIsActivateAriaDetectingSystem()
                 .AddIsDamageDealt();
+
+            ICompositeCondition canRotate = new CompositeCondition()
+                .Add(new FuncCondition(() => entity.IsDead.Value == false));
 
             ICompositeCondition mustDie = new CompositeCondition()
                 .Add(new FuncCondition(() => entity.CurrentHealth.Value <= 0));
@@ -301,6 +311,7 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
                 .Add(new FuncCondition(() => entity.CurrentEnergy.Value < entity.MaxEnergy.Value));
 
             entity
+                .AddCanRotate(canRotate)
                 .AddMustDie(mustDie)
                 .AddMustSelfRelease(mustSelfRelease)
                 .AddCanApplyDamage(canApplyDamage)
@@ -309,6 +320,7 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
                 .AddMustCastAriaContactSphere(mustCastDetectingSphere);
 
             entity
+                .AddSystem(new TransformRotationSystem())
                 .AddSystem(new EnergyReductionSystem())
                 .AddSystem(new TeleportationSystem(_randomPointGeneratorService))
                 .AddSystem(new TeleportEnergySpendRequestSystem())

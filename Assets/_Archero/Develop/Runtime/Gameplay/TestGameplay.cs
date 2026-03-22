@@ -1,5 +1,6 @@
 ﻿using _Archero.Develop.Runtime.Gameplay.EntitiesCore;
 using _Archero.Develop.Runtime.Gameplay.Features.AI;
+using _Archero.Develop.Runtime.Gameplay.Features.AI.States;
 using _Archero.Develop.Runtime.Infrastructure.DI;
 using UnityEngine;
 
@@ -30,7 +31,7 @@ namespace _Archero.Develop.Runtime.Gameplay
             _entity = _entitiesFactory.CreateHero(Vector3.zero);
             StateMachineBrain brain = _brainsFactory.CreateMainHeroBrain(_entity);
             _brainContext.SetFor(_entity, brain);
-            
+
             _entitiesFactory.CreateGhost(Vector3.zero + Vector3.forward * 3);
             _teleportedGhost = _entitiesFactory.CreateTeleportedGhost(Vector3.zero + Vector3.forward * 1.5f);
 
@@ -45,6 +46,12 @@ namespace _Archero.Develop.Runtime.Gameplay
             if(Input.GetKeyDown(KeyCode.Space))
             {
                 StateMachineBrain brain = _brainsFactory.CreateRandomTelepotGhostBrain(_teleportedGhost);
+                _brainContext.SetFor(_teleportedGhost, brain);
+            }
+            
+            if(Input.GetKeyDown(KeyCode.N))
+            {
+                StateMachineBrain brain = _brainsFactory.CreateTelepotToTargetGhostBrain(_teleportedGhost, new MinHealthTargetSelector(_teleportedGhost));
                 _brainContext.SetFor(_teleportedGhost, brain);
             }
         }

@@ -17,12 +17,14 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.AI
         private readonly DIContainer _container;
         private readonly TimerServiceFactory _timerServiceFactory;
         private readonly IInputService _inputService;
+        private readonly EntitiesLifeContext _entitiesLifeContext;
 
         public BrainsFactory(DIContainer container)
         {
             _container = container;
             _timerServiceFactory = _container.Resolve<TimerServiceFactory>();
             _inputService = _container.Resolve<IInputService>();
+            _entitiesLifeContext = _container.Resolve<EntitiesLifeContext>();
         }
 
         public StateMachineBrain CreateMainHeroBrain(Entity entity)
@@ -54,10 +56,16 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.AI
             return brain;
         }
 
-        public StateMachineBrain CreateTelepotToTargetGhostBrain(Entity entity)
+        public StateMachineBrain CreateTelepotToTargetGhostBrain(Entity entity, ITargetSelector targetSelector)
         {
             AIStateMachine stateMachine = CreateTelepotToTargetStateMachine(entity);
-            StateMachineBrain brain = new StateMachineBrain(stateMachine);
+
+            FindTargetState findTargetState = new FindTargetState(targetSelector, _entitiesLifeContext, entity);
+            AIParallelState aiParallelState = new AIParallelState(findTargetState, stateMachine);
+            AIStateMachine rootStateMachine = new AIStateMachine();
+            rootStateMachine.AddState(aiParallelState);
+
+            StateMachineBrain brain = new StateMachineBrain(rootStateMachine);
 
             return brain;
         }
