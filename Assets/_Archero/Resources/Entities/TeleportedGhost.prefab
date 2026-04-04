@@ -179,6 +179,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TeleportedGhost
       objectReference: {fileID: 0}
+    - target: {fileID: 2311955679766161449, guid: bbd60134e8ed8d540814f3eddac67c24,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3924558267797279704, guid: bbd60134e8ed8d540814f3eddac67c24,
         type: 3}
       propertyPath: m_LocalPosition.x

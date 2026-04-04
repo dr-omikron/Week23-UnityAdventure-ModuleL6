@@ -86,9 +86,10 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.AI
 
             ICompositeCondition emptyToTeleportCondition = new CompositeCondition()
                 .Add(new FuncCondition(() => cooldownTimer.IsOver))
-                .Add(new FuncCondition(() => entity.CurrentEnergy.Value >= entity.TeleportationEnergyCost.Value));
+                .Add(new FuncCondition(() => entity.CurrentEnergy.Value >= entity.TeleportationEnergyCost.Value))
+                .Add(new FuncCondition(() => entity.EnergyPercent.Value >= 0.4f));
 
-            FuncCondition teleportEndCondition = new FuncCondition(() => randomPositionTeleportState.IsTeleported);
+            FuncCondition teleportEndCondition = new FuncCondition(() => true);
 
             AIStateMachine stateMachine = new AIStateMachine(disposables);
 
@@ -116,6 +117,7 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.AI
             ICompositeCondition rotateToTeleportCondition = new CompositeCondition()
                 .Add(new FuncCondition(() => cooldownTimer.IsOver))
                 .Add(new FuncCondition(() => entity.CurrentEnergy.Value >= entity.TeleportationEnergyCost.Value))
+                .Add(new FuncCondition(() => entity.EnergyPercent.Value >= 0.4f))
                 .Add(new FuncCondition(() =>
                 {
                     Entity target = entity.CurrentTarget.Value;
@@ -130,7 +132,7 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.AI
                     return angleToTarget < 3f;
                 }));
 
-            FuncCondition teleportEndCondition = new FuncCondition(() => forwardDirectionTeleportState.IsTeleported);
+            FuncCondition teleportEndCondition = new FuncCondition(() => true);
 
             AIStateMachine stateMachine = new AIStateMachine(disposables);
 

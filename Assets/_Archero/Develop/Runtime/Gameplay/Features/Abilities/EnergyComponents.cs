@@ -14,6 +14,11 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.Abilities
         public ReactiveVariable<float> Value;
     }
 
+    public class EnergyPercent : IEntityComponent
+    {
+        public ReactiveVariable<float> Value;
+    }
+
     public class EnergyPerTimeReductionPercent : IEntityComponent
     {
         public ReactiveVariable<float> Value;

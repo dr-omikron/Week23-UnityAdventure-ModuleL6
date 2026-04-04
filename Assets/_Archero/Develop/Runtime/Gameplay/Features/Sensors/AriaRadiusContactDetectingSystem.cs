@@ -12,25 +12,18 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.Sensors
         private Buffer<Collider> _contacts;
         private LayerMask _layerMask;
         private SphereCollider _detectingSphere;
-        private CapsuleCollider _bodyCollider;
         private ReactiveVariable<bool> _isActive;
         private ICompositeCondition _mustCast;
-
-        private readonly RemoveSelfFromContactsService _removeSelfFromContactsService;
-
-        public AriaRadiusContactDetectingSystem(RemoveSelfFromContactsService removeSelfFromContactsService)
-        {
-            _removeSelfFromContactsService = removeSelfFromContactsService;
-        }
+        private Transform _entityTransform;
 
         public void OnInit(Entity entity)
         {
             _contacts = entity.ContactsCollidersBuffer;
             _layerMask = entity.ContactsDetectingMask;
             _detectingSphere = entity.AriaSphereCollider;
-            _bodyCollider = entity.BodyCollider;
             _isActive = entity.IsActivateAriaDetectingSystem;
             _mustCast = entity.MustCastAriaContactSphere;
+            _entityTransform = entity.Transform;
         }
 
         public void OnUpdate(float deltaTime)
@@ -39,20 +32,17 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.Sensors
                 return;
 
             CastOverlapSphere();
-            _removeSelfFromContactsService.Remove(_contacts, _bodyCollider);
             _isActive.Value = false;
-
-            Debug.Log("Area sphere detected: " + _contacts.Count);
         }
 
         private void CastOverlapSphere()
         {
             _contacts.Count = Physics.OverlapSphereNonAlloc(
-                _detectingSphere.center,
+                _entityTransform.position,
                 _detectingSphere.radius,
                 _contacts.Items,
                 _layerMask,
-                QueryTriggerInteraction.Ignore);
+                QueryTriggerInteraction.Collide);
         }
     }
 }

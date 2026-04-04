@@ -23,7 +23,6 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
         private readonly ColliderRegistryService _colliderRegistryService;
         private readonly MonoEntityFactory _monoEntityFactory;
         private readonly RemoveSelfFromContactsService _removeSelfFromContactsService;
-        private readonly RandomPointGeneratorService _randomPointGeneratorService;
 
         public EntitiesFactory(DIContainer container)
         {
@@ -32,7 +31,6 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
             _colliderRegistryService = _container.Resolve<ColliderRegistryService>();
             _monoEntityFactory = _container.Resolve<MonoEntityFactory>();
             _removeSelfFromContactsService = _container.Resolve<RemoveSelfFromContactsService>();
-            _randomPointGeneratorService = _container.Resolve<RandomPointGeneratorService>();
         }
 
         public Entity CreateHero(Vector3 position)
@@ -206,11 +204,11 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
                 .AddRotationSpeed(new ReactiveVariable<float>(9999))
                 .AddRotationDirection(new ReactiveVariable<Vector3>(direction))
                 .AddIsDead()
-                .AddContactsDetectingMask(1 << LayerMask.NameToLayer("Characters"))
+                .AddContactsDetectingMask(1 << LayerMask.NameToLayer("Characters") | 1 << LayerMask.NameToLayer("Teleported"))
                 .AddContactsCollidersBuffer(new Buffer<Collider>(64))
                 .AddContactsEntitiesBuffer(new Buffer<Entity>(64))
                 .AddBodyContactDamage(new ReactiveVariable<float>(damage))
-                .AddDeathMask(1 << LayerMask.NameToLayer("Characters"))
+                .AddDeathMask(1 << LayerMask.NameToLayer("Characters") | 1 << LayerMask.NameToLayer("Teleported"))
                 .AddIsTouchDeathMask();
 
             ICompositeCondition canMove = new CompositeCondition()
@@ -259,17 +257,19 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
                 .AddCurrentHealth(new ReactiveVariable<float>(100))
                 .AddMaxEnergy(new ReactiveVariable<float>(100))
                 .AddCurrentEnergy(new ReactiveVariable<float>(100))
+                .AddEnergyPercent()
                 .AddCurrentTarget()
                 .AddRotationSpeed(new ReactiveVariable<float>(900))
                 .AddRotationDirection()
                 .AddTeleported()
+                .AddTeleportationRequest()
                 .AddEnergySpendRequest()
                 .AddEnergySpendEvent()
                 .AddEnergyReductionEvent()
                 .AddEnergyPerTimeReductionPercent(new ReactiveVariable<float>(10))
                 .AddCurrentEnergyReductionTime()
                 .AddEnergyReductionPeriodSeconds(new ReactiveVariable<float>(2))
-                .AddTeleportationEnergyCost(new ReactiveVariable<float>(40))
+                .AddTeleportationEnergyCost(new ReactiveVariable<float>(30))
                 .AddTeleportationMaxRadius(new ReactiveVariable<float>(3))
                 .AddIsActivateTeleport()
                 .AddIsDead()
@@ -303,8 +303,7 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
                 .Add(new FuncCondition(() => entity.IsActivateAriaDetectingSystem.Value));
 
             ICompositeCondition canTeleport = new CompositeCondition()
-                .Add(new FuncCondition(() => entity.IsDead.Value == false))
-                .Add(new FuncCondition(() => entity.CurrentEnergy.Value >= entity.TeleportationEnergyCost.Value));
+                .Add(new FuncCondition(() => entity.IsDead.Value == false));
 
             ICompositeCondition canReductionEnergy = new CompositeCondition()
                 .Add(new FuncCondition(() => entity.IsDead.Value == false))
@@ -321,12 +320,13 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
 
             entity
                 .AddSystem(new TransformRotationSystem())
+                .AddSystem(new CalculateStatsPercentsSystem())
                 .AddSystem(new EnergyReductionSystem())
-                .AddSystem(new TeleportationSystem(_randomPointGeneratorService))
+                .AddSystem(new TeleportationSystem())
                 .AddSystem(new TeleportEnergySpendRequestSystem())
                 .AddSystem(new TeleportAriaDamageRequestSystem())
                 .AddSystem(new EnergySpendSystem())
-                .AddSystem(new AriaRadiusContactDetectingSystem(_removeSelfFromContactsService))
+                .AddSystem(new AriaRadiusContactDetectingSystem())
                 .AddSystem(new BodyContactsEntitiesFilterSystem(_colliderRegistryService))
                 .AddSystem(new DealDamageOnAriaContactSystem())
                 .AddSystem(new ApplyDamageSystem())

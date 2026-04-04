@@ -1127,6 +1127,30 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
 			return AddComponent(new _Archero.Develop.Runtime.Gameplay.Features.Abilities.CurrentEnergy {Value = value});
 		}
 
+		public _Archero.Develop.Runtime.Gameplay.Features.Abilities.EnergyPercent EnergyPercentC => GetComponent<_Archero.Develop.Runtime.Gameplay.Features.Abilities.EnergyPercent>();
+
+		public _Archero.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single> EnergyPercent => EnergyPercentC.Value;
+
+		public bool TryGetEnergyPercent(out _Archero.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single> value)
+		{
+			bool result = TryGetComponent(out _Archero.Develop.Runtime.Gameplay.Features.Abilities.EnergyPercent component);
+			if(result)
+				value = component.Value;
+			else
+				value = default(_Archero.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single>);
+			return result;
+		}
+
+		public _Archero.Develop.Runtime.Gameplay.EntitiesCore.Entity AddEnergyPercent()
+		{
+			return AddComponent(new _Archero.Develop.Runtime.Gameplay.Features.Abilities.EnergyPercent { Value = new _Archero.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single>() });
+		}
+
+		public _Archero.Develop.Runtime.Gameplay.EntitiesCore.Entity AddEnergyPercent(_Archero.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single> value)
+		{
+			return AddComponent(new _Archero.Develop.Runtime.Gameplay.Features.Abilities.EnergyPercent {Value = value});
+		}
+
 		public _Archero.Develop.Runtime.Gameplay.Features.Abilities.EnergyPerTimeReductionPercent EnergyPerTimeReductionPercentC => GetComponent<_Archero.Develop.Runtime.Gameplay.Features.Abilities.EnergyPerTimeReductionPercent>();
 
 		public _Archero.Develop.Runtime.Utilities.Reactive.ReactiveVariable<System.Single> EnergyPerTimeReductionPercent => EnergyPerTimeReductionPercentC.Value;
@@ -1403,6 +1427,30 @@ namespace _Archero.Develop.Runtime.Gameplay.EntitiesCore
 		public _Archero.Develop.Runtime.Gameplay.EntitiesCore.Entity AddTeleported(_Archero.Develop.Runtime.Utilities.Reactive.ReactiveEvent value)
 		{
 			return AddComponent(new _Archero.Develop.Runtime.Gameplay.Features.Abilities.Teleportation.Teleported {Value = value});
+		}
+
+		public _Archero.Develop.Runtime.Gameplay.Features.Abilities.Teleportation.TeleportationRequest TeleportationRequestC => GetComponent<_Archero.Develop.Runtime.Gameplay.Features.Abilities.Teleportation.TeleportationRequest>();
+
+		public _Archero.Develop.Runtime.Utilities.Reactive.ReactiveEvent<UnityEngine.Vector3> TeleportationRequest => TeleportationRequestC.Value;
+
+		public bool TryGetTeleportationRequest(out _Archero.Develop.Runtime.Utilities.Reactive.ReactiveEvent<UnityEngine.Vector3> value)
+		{
+			bool result = TryGetComponent(out _Archero.Develop.Runtime.Gameplay.Features.Abilities.Teleportation.TeleportationRequest component);
+			if(result)
+				value = component.Value;
+			else
+				value = default(_Archero.Develop.Runtime.Utilities.Reactive.ReactiveEvent<UnityEngine.Vector3>);
+			return result;
+		}
+
+		public _Archero.Develop.Runtime.Gameplay.EntitiesCore.Entity AddTeleportationRequest()
+		{
+			return AddComponent(new _Archero.Develop.Runtime.Gameplay.Features.Abilities.Teleportation.TeleportationRequest { Value = new _Archero.Develop.Runtime.Utilities.Reactive.ReactiveEvent<UnityEngine.Vector3>() });
+		}
+
+		public _Archero.Develop.Runtime.Gameplay.EntitiesCore.Entity AddTeleportationRequest(_Archero.Develop.Runtime.Utilities.Reactive.ReactiveEvent<UnityEngine.Vector3> value)
+		{
+			return AddComponent(new _Archero.Develop.Runtime.Gameplay.Features.Abilities.Teleportation.TeleportationRequest {Value = value});
 		}
 
 		public _Archero.Develop.Runtime.Gameplay.Common.RigidbodyComponent RigidbodyC => GetComponent<_Archero.Develop.Runtime.Gameplay.Common.RigidbodyComponent>();

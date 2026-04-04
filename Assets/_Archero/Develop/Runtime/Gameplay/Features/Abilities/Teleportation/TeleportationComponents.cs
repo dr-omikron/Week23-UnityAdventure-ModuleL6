@@ -1,6 +1,7 @@
 ﻿using _Archero.Develop.Runtime.Gameplay.EntitiesCore;
 using _Archero.Develop.Runtime.Utilities.Conditions;
 using _Archero.Develop.Runtime.Utilities.Reactive;
+using UnityEngine;
 
 namespace _Archero.Develop.Runtime.Gameplay.Features.Abilities.Teleportation
 {
@@ -27,5 +28,10 @@ namespace _Archero.Develop.Runtime.Gameplay.Features.Abilities.Teleportation
     public class Teleported : IEntityComponent
     {
         public ReactiveEvent Value;
+    }
+
+    public class TeleportationRequest : IEntityComponent
+    {
+        public ReactiveEvent<Vector3> Value;
     }
 }
